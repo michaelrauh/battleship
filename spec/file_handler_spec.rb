@@ -5,7 +5,7 @@ describe 'file handler' do
   SNAPSHOTS_DIR = 'snapshots'
 
   after(:each) do
-    FileUtils.rm_rf('snapshots')
+    FileUtils.rm_rf(SNAPSHOTS_DIR)
   end
 
   before(:each) do
@@ -13,8 +13,8 @@ describe 'file handler' do
   end
 
   it 'can calculate a safe name for a new snapshot file' do
-    expect(FileHandler.get_next).to eq('snapshots/1.yml')
-    File.open('snapshots/1.yml', 'w') {|f| f.write "" }
-    expect(FileHandler.get_next).to eq('snapshots/2.yml')
+    expect(FileHandler.get_next).to eq("#{SNAPSHOTS_DIR}/1.yml")
+    File.open("#{SNAPSHOTS_DIR}/1.yml", 'w') {|f| f.write "" }
+    expect(FileHandler.get_next).to eq("#{SNAPSHOTS_DIR}/2.yml")
   end
 end
