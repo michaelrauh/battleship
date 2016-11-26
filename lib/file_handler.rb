@@ -10,4 +10,8 @@ module FileHandler
     end
       current_file
   end
+
+  def self.get_all
+    Dir["#{SNAPSHOTS_DIR}/*.yml"].sort
+  end
 end

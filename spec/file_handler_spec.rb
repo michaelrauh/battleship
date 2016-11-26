@@ -17,4 +17,12 @@ describe 'file handler' do
     File.open("#{SNAPSHOTS_DIR}/1.yml", 'w') {|f| f.write "" }
     expect(FileHandler.get_next).to eq("#{SNAPSHOTS_DIR}/2.yml")
   end
+
+  it 'can retrieve all training files' do
+    File.open("#{SNAPSHOTS_DIR}/1.yml", 'w') {|f| f.write "" }
+    File.open("#{SNAPSHOTS_DIR}/2.yml", 'w') {|f| f.write "" }
+    found = FileHandler.get_all
+    expected = ["#{SNAPSHOTS_DIR}/1.yml", "#{SNAPSHOTS_DIR}/2.yml"]
+    expect(found).to eq expected
+  end
 end
