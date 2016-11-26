@@ -1,5 +1,7 @@
 require 'yaml'
 require_relative '../lib/game_state'
+require 'board_saver'
+require 'training_aggregator'
 
 class SeekAndDestroy
 
@@ -10,16 +12,7 @@ class SeekAndDestroy
   end
 
   def setup_training
-    Dir.mkdir(SNAPSHOTS_DIR) unless Dir.exist?(SNAPSHOTS_DIR)
-    most_recent_file = Dir["#{SNAPSHOTS_DIR}/*.yml"].sort.last
-    if most_recent_file
-      @current_file = "#{SNAPSHOTS_DIR}/#{most_recent_file.match(/\d+/)[0].to_i + 1}.yml"
-      @trained = true
-    else
-      @current_file = "#{SNAPSHOTS_DIR}/1.yml"
-      @trained = false
-    end
-    File.open(@current_file, 'w+'){|file| file.write("")}
+    @board_saver = BoardSaver.new
   end
 
   def build_model
@@ -36,11 +29,11 @@ class SeekAndDestroy
   end
 
   def update_model(state)
-    GameState.write(@current_file, state)
+    @board_saver.update(state)
   end
 
   def model_trained
-    @trained
+    TrainingAggregator.trained?
   end
 
   def initial_ship_positions

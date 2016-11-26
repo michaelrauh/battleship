@@ -38,34 +38,6 @@ describe 'player seek and destroy' do
     expect(coord).to eq [5, 5]
   end
 
-  it "creates a snapshot file when a new game starts" do
-    seek_and_destroy.new_game
-    expect(File.exist?('snapshots/1.yml')).to be true
-  end
-
-  it "creates a new file if there is already a training file" do
-    Dir.mkdir("snapshots")
-    File.open("snapshots/1.yml", 'w+'){ |file| file.write("")}
-    seek_and_destroy.new_game
-    expect(File.exist?('snapshots/2.yml')).to be true
-  end
-
-  it 'writes state to a snapshot when it takes a turn' do
-    seek_and_destroy.new_game
-    seek_and_destroy.take_turn(state, ships_remaining)
-    coordinates = YAML.load_file('snapshots/1.yml')
-    expect(state).to eq coordinates
-  end
-
-  it 'overwrites snapshot each turn' do
-    seek_and_destroy.new_game
-    seek_and_destroy.take_turn(state, ships_remaining)
-    state[0][0] = :hit
-    seek_and_destroy.take_turn(state, ships_remaining)
-    coordinates = YAML.load_file('snapshots/1.yml')
-    expect(state).to eq coordinates
-  end
-
   it 'attacks most hit spot when trained' do
     old_state = state.dup
     old_state[0][0] = :hit
