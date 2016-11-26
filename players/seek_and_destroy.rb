@@ -22,6 +22,7 @@ class SeekAndDestroy
   end
 
   def new_game
+    @model = TrainingAggregator.aggregate
     @board_saver = BoardSaver.new
     initial_ship_positions
   end
@@ -29,8 +30,7 @@ class SeekAndDestroy
   def take_turn(state, ships_remaining)
     @board_saver.update(state)
     if TrainingAggregator.trained?
-      model = TrainingAggregator.aggregate
-      return unflatten(model.flatten.each_with_index.max[1])
+      return unflatten(@model.flatten.each_with_index.max[1])
     else
       random_hit
     end
