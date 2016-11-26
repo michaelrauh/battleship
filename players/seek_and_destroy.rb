@@ -11,22 +11,6 @@ class SeekAndDestroy
     "Seek and Destroy"
   end
 
-  def setup_training
-    @board_saver = BoardSaver.new
-  end
-
-  def build_model
-    TrainingAggregator.aggregate
-  end
-
-  def update_model(state)
-    @board_saver.update(state)
-  end
-
-  def model_trained
-    TrainingAggregator.trained?
-  end
-
   def initial_ship_positions
     [
       [0, 0, 5, :across],
@@ -38,14 +22,14 @@ class SeekAndDestroy
   end
 
   def new_game
-    setup_training
+    @board_saver = BoardSaver.new
     initial_ship_positions
   end
 
   def take_turn(state, ships_remaining)
-    update_model(state)
-    if model_trained
-      model = build_model
+    @board_saver.update(state)
+    if TrainingAggregator.trained?
+      model = TrainingAggregator.aggregate
       return unflatten(model.flatten.each_with_index.max[1])
     else
       random_hit
