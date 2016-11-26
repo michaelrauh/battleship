@@ -16,16 +16,7 @@ class SeekAndDestroy
   end
 
   def build_model
-    model = Array.new(100, 0)
-    Dir["#{SNAPSHOTS_DIR}/*.yml"].each do |filename|
-      complete_state = GameState.load(filename).flatten
-      complete_state.each_with_index do |state, index|
-        if (state == :hit)
-          model[index] += 1
-        end
-      end
-    end
-    model
+    TrainingAggregator.aggregate
   end
 
   def update_model(state)
@@ -55,7 +46,7 @@ class SeekAndDestroy
     update_model(state)
     if model_trained
       model = build_model
-      return unflatten(model.each_with_index.max[1])
+      return unflatten(model.flatten.each_with_index.max[1])
     else
       random_hit
     end
